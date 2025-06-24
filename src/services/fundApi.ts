@@ -1,7 +1,6 @@
-// src/services/fundApi.ts
 import axios from "axios";
 
-const BASE_URL = "https://api.mfapi.in/mf"; // public API endpoint
+const BASE_URL = "https://api.mfapi.in/mf";
 
 export const searchFunds = async (query: string) => {
   const response = await axios.get(`https://api.mfapi.in/mf/search?q=${query}`);

@@ -3,11 +3,11 @@
 // import viteLogo from "/vite.svg";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import "./App.css";
-import LoginPage from "./LoginPage";
-import RegisterPage from "./RegisterPage";
-import LandingPage from "./LandingPage";
-import FundDetailPage from "./FundDetailPage";
-import SavedFundsPage from "./SavedFundsPage";
+import LoginPage from "./pages/LoginPage";
+import RegisterPage from "./pages/RegisterPage";
+import LandingPage from "./pages/LandingPage";
+import FundDetailPage from "./pages/FundDetailPage";
+import SavedFundsPage from "./pages/SavedFundsPage";
 
 function App() {
   //const [count, setCount] = useState(0);
