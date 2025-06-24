@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
+import ToastMessage from "../components/ToastMessage";
+import "bootstrap/dist/css/bootstrap.min.css";
 
 const RegisterPage: React.FC = () => {
   const [name, setName] = useState<string>("");
@@ -15,7 +17,7 @@ const RegisterPage: React.FC = () => {
 
   const navigate = useNavigate();
 
-  const showToastMessage = (message: string, type: "success" | "danger") => {
+  const showToastHandler = (message: string, type: "success" | "danger") => {
     setToastMessage(message);
     setToastType(type);
     setShowToast(true);
@@ -26,32 +28,24 @@ const RegisterPage: React.FC = () => {
     e.preventDefault();
 
     if (password !== confirmPassword) {
-      showToastMessage("Passwords do not match!", "danger");
+      showToastHandler("Passwords do not match!", "danger");
       return;
     }
 
     try {
-      const response = await axios.post(
-        "http://localhost:8080/api/v1/register",
-        {
-          fullname: name,
-          email,
-          phone,
-          password,
-        }
-      );
+      await axios.post("http://localhost:8080/api/v1/register", {
+        fullname: name,
+        email,
+        phone,
+        password,
+      });
 
-      showToastMessage(response.data.message, "success");
-
-      // Redirect after short delay
-      setTimeout(() => {
-        navigate("/");
-      }, 1000);
+      showToastHandler("Registration successful!", "success");
+      setTimeout(() => navigate("/"), 1000);
     } catch (error: any) {
       const errorMsg =
-        error.response?.data?.message ||
-        "Registration failed. Please try again.";
-      showToastMessage(errorMsg, "danger");
+        error.response?.data?.message || "Registration failed. Try again.";
+      showToastHandler(errorMsg, "danger");
     }
   };
 
@@ -142,17 +136,7 @@ const RegisterPage: React.FC = () => {
         </form>
       </div>
 
-      {/* Toast */}
-      {showToast && (
-        <div
-          className={`toast align-items-center text-white bg-${toastType} border-0 position-absolute bottom-0 end-0 m-3 show`}
-          role="alert"
-        >
-          <div className="d-flex">
-            <div className="toast-body">{toastMessage}</div>
-          </div>
-        </div>
-      )}
+      <ToastMessage message={toastMessage} type={toastType} show={showToast} />
     </div>
   );
 };
