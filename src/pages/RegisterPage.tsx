@@ -1,7 +1,6 @@
-// src/RegisterPage.tsx
 import React, { useState } from "react";
-import "bootstrap/dist/css/bootstrap.min.css";
-import { Link } from "react-router-dom";
+import axios from "axios";
+import { Link, useNavigate } from "react-router-dom";
 
 const RegisterPage: React.FC = () => {
   const [name, setName] = useState<string>("");
@@ -10,18 +9,54 @@ const RegisterPage: React.FC = () => {
   const [password, setPassword] = useState<string>("");
   const [confirmPassword, setConfirmPassword] = useState<string>("");
 
-  const handleRegister = (e: React.FormEvent<HTMLFormElement>) => {
+  const [toastMessage, setToastMessage] = useState<string>("");
+  const [toastType, setToastType] = useState<"success" | "danger">("success");
+  const [showToast, setShowToast] = useState<boolean>(false);
+
+  const navigate = useNavigate();
+
+  const showToastMessage = (message: string, type: "success" | "danger") => {
+    setToastMessage(message);
+    setToastType(type);
+    setShowToast(true);
+    setTimeout(() => setShowToast(false), 3000);
+  };
+
+  const handleRegister = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
     if (password !== confirmPassword) {
-      alert("Passwords do not match!");
+      showToastMessage("Passwords do not match!", "danger");
       return;
     }
-    console.log({ name, email, phone, password });
-    // You can call register API here
+
+    try {
+      const response = await axios.post(
+        "http://localhost:8080/api/v1/register",
+        {
+          fullname: name,
+          email,
+          phone,
+          password,
+        }
+      );
+
+      showToastMessage(response.data.message, "success");
+
+      // Redirect after short delay
+      setTimeout(() => {
+        navigate("/");
+      }, 1000);
+    } catch (error: any) {
+      const errorMsg =
+        error.response?.data?.message ||
+        "Registration failed. Please try again.";
+      showToastMessage(errorMsg, "danger");
+    }
   };
 
   return (
-    <div className="d-flex justify-content-center align-items-center vh-100 bg-body-tertiary">
+    <div className="d-flex justify-content-center align-items-center vh-100 bg-body-tertiary position-relative">
       <div
         className="card p-4 shadow rounded w-100"
         style={{ maxWidth: "450px" }}
@@ -30,6 +65,7 @@ const RegisterPage: React.FC = () => {
         <p className="text-center text-muted mb-4">
           Please fill in the details
         </p>
+
         <form onSubmit={handleRegister}>
           <div className="mb-3">
             <label className="form-label">Full Name</label>
@@ -98,13 +134,25 @@ const RegisterPage: React.FC = () => {
           <div className="text-center">
             <small className="text-muted">
               Already have an account?{" "}
-              <Link to="/" className="text-primary fw-bold">
+              <Link to="/login" className="text-primary fw-bold">
                 Login
               </Link>
             </small>
           </div>
         </form>
       </div>
+
+      {/* Toast */}
+      {showToast && (
+        <div
+          className={`toast align-items-center text-white bg-${toastType} border-0 position-absolute bottom-0 end-0 m-3 show`}
+          role="alert"
+        >
+          <div className="d-flex">
+            <div className="toast-body">{toastMessage}</div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
