@@ -1,4 +1,3 @@
-// src/FundDetailPage.tsx
 import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
@@ -15,17 +14,41 @@ const FundDetailPage: React.FC = () => {
     navigate("/saved-funds");
   };
 
+  const handleBack = () => {
+    navigate(-1);
+  };
+
   if (!fund) {
     return <p className="text-center mt-5 text-danger">No fund data found.</p>;
   }
 
   return (
-    <div className="container py-5">
-      <h2 className="mb-4 text-primary">{fund.schemeName}</h2>
-      <p><strong>Scheme Code:</strong> {fund.schemeCode}</p>
-      <button onClick={handleSave} className="btn btn-primary mt-3">
-        Save Fund
-      </button>
+    <div
+      className="container d-flex justify-content-center align-items-center py-5"
+      style={{ minHeight: "80vh" }}
+    >
+      <div
+        className="card shadow-lg"
+        style={{ width: "100%", maxWidth: "500px" }}
+      >
+        <div className="card-body">
+          <h4 className="card-title text-primary mb-3">{fund.schemeName}</h4>
+          <p className="card-text">
+            <strong>Scheme Code:</strong> {fund.schemeCode}
+          </p>
+
+          <button onClick={handleSave} className="btn btn-primary mt-3 w-100">
+            Save Fund
+          </button>
+
+          <button
+            onClick={handleBack}
+            className="btn btn-outline-secondary mt-2 w-100"
+          >
+            Back
+          </button>
+        </div>
+      </div>
     </div>
   );
 };

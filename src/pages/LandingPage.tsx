@@ -13,8 +13,10 @@ const LandingPage: React.FC = () => {
 
   useEffect(() => {
     if (!query.trim()) {
+      clearTimeout(debounceTimeout);
       setResults([]);
       setSearched(false);
+      setSearching(false);
       return;
     }
 
@@ -33,7 +35,7 @@ const LandingPage: React.FC = () => {
       } finally {
         setSearching(false);
       }
-    }, 500); // 500ms debounce
+    }, 500);
   }, [query]);
 
   const handleViewDetails = (fund: any) => {
@@ -56,9 +58,11 @@ const LandingPage: React.FC = () => {
         />
       </form>
 
-      {searching && <p className="text-center text-muted">Searching...</p>}
+      {searching && (
+        <p className="text-center text-muted">Searching for "{query}"...</p>
+      )}
 
-      {searched && results.length === 0 && !searching && (
+      {searched && query.trim() && results.length === 0 && !searching && (
         <p className="text-center text-danger">
           No results found for "{query}"
         </p>
