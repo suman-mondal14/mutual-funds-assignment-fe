@@ -1,18 +1,48 @@
-// src/LoginPage.tsx
 import React, { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
+import ToastMessage from "../components/ToastMessage";
 
 const LoginPage: React.FC = () => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const [toastMessage, setToastMessage] = useState<string>("");
+  const [toastType, setToastType] = useState<"success" | "danger">("success");
+  const [showToast, setShowToast] = useState<boolean>(false);
 
   const navigate = useNavigate();
 
-  const handleLogin = (e: React.FormEvent<HTMLFormElement>) => {
+  const showToastHandler = (message: string, type: "success" | "danger") => {
+    setToastMessage(message);
+    setToastType(type);
+    setShowToast(true);
+    setTimeout(() => setShowToast(false), 3000);
+  };
+
+  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("Email:", email, "Password:", password);
-    navigate("/landing");
+    const payload = {
+      email,
+      password,
+    };
+
+    try {
+      const response = await axios.post(
+        "http://localhost:8080/api/v1/login",
+        payload
+      );
+
+      if (response.status === 200) {
+        localStorage.setItem("token", response.data.token);
+        showToastHandler(response.data.message, "success");
+        setTimeout(() => navigate("/landing"), 1000);
+      } else {
+        showToastHandler(response.data.message, "danger");
+      }
+    } catch (error) {
+      showToastHandler("Login Failed", "danger");
+    }
   };
 
   return (
@@ -62,6 +92,7 @@ const LoginPage: React.FC = () => {
           </div>
         </form>
       </div>
+      <ToastMessage message={toastMessage} type={toastType} show={showToast} />
     </div>
   );
 };
