@@ -23,11 +23,6 @@ const FundDetailPage: React.FC = () => {
   };
 
   const handleSave = async () => {
-    //const savedFunds = JSON.parse(localStorage.getItem("savedFunds") || "[]");
-    // savedFunds.push(fund);
-    // localStorage.setItem("savedFunds", JSON.stringify(savedFunds));
-    // alert("Fund saved!");
-
     const payload = {
       schemeCode: fund.schemeCode,
       schemeName: fund.schemeName,
