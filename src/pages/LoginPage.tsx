@@ -11,6 +11,7 @@ const LoginPage: React.FC = () => {
   const [toastMessage, setToastMessage] = useState<string>("");
   const [toastType, setToastType] = useState<"success" | "danger">("success");
   const [showToast, setShowToast] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
   const { refetchUser } = useUser();
 
   const navigate = useNavigate();
@@ -24,6 +25,7 @@ const LoginPage: React.FC = () => {
 
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setLoading(true);
     const payload = {
       email,
       password,
@@ -45,6 +47,8 @@ const LoginPage: React.FC = () => {
       }
     } catch (error) {
       showToastHandler("Login Failed", "danger");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -81,8 +85,8 @@ const LoginPage: React.FC = () => {
             />
           </div>
 
-          <button type="submit" className="btn btn-primary w-100 mb-3">
-            Login
+          <button type="submit" className="btn btn-primary w-100 mb-3" disabled={loading}>
+            {loading?"Please wait...": "Login"}
           </button>
 
           <div className="text-center">

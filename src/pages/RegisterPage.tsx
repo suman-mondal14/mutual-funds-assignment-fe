@@ -14,6 +14,7 @@ const RegisterPage: React.FC = () => {
   const [toastMessage, setToastMessage] = useState<string>("");
   const [toastType, setToastType] = useState<"success" | "danger">("success");
   const [showToast, setShowToast] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const navigate = useNavigate();
 
@@ -26,19 +27,29 @@ const RegisterPage: React.FC = () => {
 
   const handleRegister = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setLoading(true);
 
     if (password !== confirmPassword) {
       showToastHandler("Passwords do not match!", "danger");
+      setLoading(false);
+      return;
+    }
+    if (phone.length > 10) {
+      showToastHandler("Please Enter 10 digit phone number!", "danger");
+      setLoading(false);
       return;
     }
 
     try {
-      await axios.post("https://mutual-funds-assignment-be.onrender.com/api/v1/register", {
-        fullname: name,
-        email,
-        phone,
-        password,
-      });
+      await axios.post(
+        "https://mutual-funds-assignment-be.onrender.com/api/v1/register",
+        {
+          fullname: name,
+          email,
+          phone,
+          password,
+        }
+      );
 
       showToastHandler("Registration successful!", "success");
       setTimeout(() => navigate("/"), 1000);
@@ -46,6 +57,8 @@ const RegisterPage: React.FC = () => {
       const errorMsg =
         error.response?.data?.message || "Registration failed. Try again.";
       showToastHandler(errorMsg, "danger");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -121,14 +134,18 @@ const RegisterPage: React.FC = () => {
             />
           </div>
 
-          <button type="submit" className="btn btn-primary w-100 mb-3">
-            Register
+          <button
+            type="submit"
+            className="btn btn-primary w-100 mb-3"
+            disabled={loading}
+          >
+            {loading ? "Creating Your Account, Please wait..." : "Register"}
           </button>
 
           <div className="text-center">
             <small className="text-muted">
               Already have an account?{" "}
-              <Link to="/login" className="text-primary fw-bold">
+              <Link to="/" className="text-primary fw-bold">
                 Login
               </Link>
             </small>
