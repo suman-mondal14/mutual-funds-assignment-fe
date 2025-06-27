@@ -13,7 +13,7 @@ const SavedFundsPage: React.FC = () => {
     const userId = user?._id;
     try {
       const response = await axios.get(
-        `http://localhost:8080/api/v1/get-mutual-funds/${userId}`
+        `https://mutual-funds-assignment-be.onrender.com/api/v1/get-mutual-funds/${userId}`
       );
       if (response.status === 200) {
         setSavedFunds(response.data.funds);

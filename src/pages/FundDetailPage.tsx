@@ -35,7 +35,7 @@ const FundDetailPage: React.FC = () => {
     };
     try {
       const response = await axios.post(
-        "http://localhost:8080/api/v1/save-mutual-fund",
+        "https://mutual-funds-assignment-be.onrender.com/api/v1/save-mutual-fund",
         payload
       );
 

@@ -36,7 +36,7 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({
 
     try {
       const response = await axios.get(
-        "http://localhost:8080/api/v1/get-user-details",
+        "https://mutual-funds-assignment-be.onrender.com/api/v1/get-user-details",
         {
           headers: {
             Authorization: `Bearer ${token}`,
