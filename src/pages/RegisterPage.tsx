@@ -34,8 +34,14 @@ const RegisterPage: React.FC = () => {
       setLoading(false);
       return;
     }
-    if (phone.length > 10) {
-      showToastHandler("Please Enter 10 digit phone number!", "danger");
+    if (phone.length !== 10 || !/^\d{10}$/.test(phone)) {
+      showToastHandler("Please enter a valid 10-digit phone number!", "danger");
+      setLoading(false);
+      return;
+    }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      showToastHandler("Please enter a valid email address!", "danger");
       setLoading(false);
       return;
     }
