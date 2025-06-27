@@ -1,7 +1,8 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
+import type { ReactNode } from "react";
 import axios from "axios";
 
-interface UserType {
+export interface UserType {
   _id: string;
   fullname: string;
   email: string;
@@ -12,11 +13,14 @@ interface UserContextType {
   user: UserType | null;
   loading: boolean;
   setUser: React.Dispatch<React.SetStateAction<UserType | null>>;
+  refetchUser: () => void;
 }
+
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
-export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
+
+export const UserProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
   const [user, setUser] = useState<UserType | null>(null);
@@ -25,6 +29,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
   const fetchUser = async () => {
     const token = localStorage.getItem("token");
     if (!token) {
+      setUser(null);
       setLoading(false);
       return;
     }
@@ -38,11 +43,11 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
           },
         }
       );
-
       setUser(response.data.user);
     } catch (error) {
       console.error("Failed to fetch user", error);
       localStorage.removeItem("token");
+      setUser(null);
     } finally {
       setLoading(false);
     }
@@ -53,13 +58,20 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
   }, []);
 
   return (
-    <UserContext.Provider value={{ user, setUser, loading }}>
+    <UserContext.Provider
+      value={{
+        user,
+        setUser,
+        loading,
+        refetchUser: fetchUser,
+      }}
+    >
       {children}
     </UserContext.Provider>
   );
 };
 
-// Custom hook to use context
+
 export const useUser = (): UserContextType => {
   const context = useContext(UserContext);
   if (!context) {

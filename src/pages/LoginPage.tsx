@@ -3,6 +3,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import ToastMessage from "../components/ToastMessage";
+import { useUser } from "../context/UserContext";
 
 const LoginPage: React.FC = () => {
   const [email, setEmail] = useState<string>("");
@@ -10,6 +11,7 @@ const LoginPage: React.FC = () => {
   const [toastMessage, setToastMessage] = useState<string>("");
   const [toastType, setToastType] = useState<"success" | "danger">("success");
   const [showToast, setShowToast] = useState<boolean>(false);
+  const { refetchUser } = useUser();
 
   const navigate = useNavigate();
 
@@ -35,6 +37,7 @@ const LoginPage: React.FC = () => {
 
       if (response.status === 200) {
         localStorage.setItem("token", response.data.token);
+        refetchUser();
         showToastHandler(response.data.message, "success");
         setTimeout(() => navigate("/landing"), 1000);
       } else {
