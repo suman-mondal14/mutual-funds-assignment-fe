@@ -33,7 +33,7 @@ const RegisterPage: React.FC = () => {
     }
 
     try {
-      await axios.post("http://localhost:8080/api/v1/register", {
+      await axios.post("https://mutual-funds-assignment-be.onrender.com/api/v1/register", {
         fullname: name,
         email,
         phone,
