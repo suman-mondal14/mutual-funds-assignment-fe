@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import Header from "../components/Header";
 import { useUser } from "../context/UserContext";
 import axios from "axios";
 import ToastMessage from "../components/ToastMessage";
 
+//  Generates random dummy fund details
 const generateRandomFundDetails = () => {
   const categories = [
     "Equity - Large Cap",
@@ -57,7 +58,7 @@ const FundDetailPage: React.FC = () => {
   const [toastType, setToastType] = useState<"success" | "danger">("success");
   const [showToast, setShowToast] = useState<boolean>(false);
 
-  const fundDetails = generateRandomFundDetails();
+  const fundDetails = useMemo(() => generateRandomFundDetails(), []);
 
   const showToastHandler = (message: string, type: "success" | "danger") => {
     setToastMessage(message);
