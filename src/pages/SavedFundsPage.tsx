@@ -116,8 +116,7 @@ const SavedFundsPage: React.FC = () => {
                       right: "10px",
                       zIndex: 10,
                       borderRadius: "50%",
-                      backgroundColor: "#fff",
-                      boxShadow: "0 2px 6px rgba(0, 0, 0, 0.15)",
+                      padding:0
                     }}
                     onClick={(e) => handleDelete(e, fund.schemeCode)}
                     title="Delete Fund"
